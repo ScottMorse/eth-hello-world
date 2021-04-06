@@ -45,7 +45,7 @@ function logResults(results: { [candidate: string]: number }){
   } else if(winningCandidates.length > 1){
     const winnersP1 = winningCandidates.slice(0, winningCandidates.length - 1)
     const lastWinner = winningCandidates[winningCandidates.length - 1]
-    console.log(`${winnersP1.join(', ')} and ${lastWinner} tied with ${winningVotes} each!`)
+    console.log(`${winnersP1.join(', ')} and ${lastWinner} tied with ${winningVotes} votes!`)
   } else {
     console.log(`No votes received for any candidates?`)
   }
@@ -65,7 +65,7 @@ function deployContract(web3: typeof Web3, userAccounts: Array<string>){
     })
     .send({
       from: userAccounts[0], // arbitrary account to 
-      gas: 1500000,
+      gas: 2000000,
       gasPrice: web3.utils.toWei('0.00003', 'ether')
     })
     .then((newContract: typeof Web3.eth.Contract) => {
@@ -83,18 +83,16 @@ function deployContract(web3: typeof Web3, userAccounts: Array<string>){
 
       const getVoteResults = async () => {
         const results: { [candidate: string]: number } = { }
-        await new Promise((resovlve) => {
-          candidates.forEach((candidate, i) => {
-            contract.methods
-              .getTotalVotesFor(web3.utils.asciiToHex(candidate))
-              .call((err: Error, n: number) => {
-                console.log(`Candidate ${candidate} received ${n} votes!`)
-                results[candidate] = n
-                if(Object.keys(results).length === candidates.length){
-                  logResults(results)
-                }
-              })
-          })
+        candidates.forEach((candidate, i) => {
+          contract.methods
+            .getTotalVotesFor(web3.utils.asciiToHex(candidate))
+            .call((err: Error, n: number) => {
+              console.log(`Candidate ${candidate} received ${n} votes!`)
+              results[candidate] = n
+              if(Object.keys(results).length === candidates.length){
+                logResults(results)
+              }
+            })
         })
       }
 
