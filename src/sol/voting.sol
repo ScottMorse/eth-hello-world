@@ -10,7 +10,7 @@ contract Voting {
         candidateList = _candidateList;
     }
 
-    function totalVotesFor(bytes32 candidate) view public returns (uint256) {
+    function getTotalVotesFor(bytes32 candidate) view public returns (uint256) {
         require(validateCandidate(candidate));
         return votesReceived[candidate];
     }
